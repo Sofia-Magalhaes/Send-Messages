@@ -4,6 +4,8 @@ const multer = require('multer');
 const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
+const dayjs = require('dayjs');
+
 
 const app = express();
 app.use(express.json());
@@ -25,35 +27,56 @@ function start(client){
      // Endpoint para upload do Excel e envio das mensagens
      app.post('/send-excel', upload.single('file'), async (req, res) => {
         try {
+            const sendAt = req.body.sendAt; // ex: "19:27"
+            if (!sendAt) {
+              return res.status(400).json({ error: 'Campo "sendAt" obrigatório no formato HH:mm' });
+            }
+        
+            const now = dayjs();
+            const [hour, minute] = sendAt.split(':');
+            let sendTime = now.hour(Number(hour)).minute(Number(minute)).second(0);
+        
+            // Se a hora já passou hoje, agenda pra amanhã
+            if (sendTime.isBefore(now)) {
+              sendTime = sendTime.add(1, 'day');
+            }
+        
+            const delay = sendTime.diff(now, 'milliseconds');
+        
             const filePath = req.file.path;
             const workbook = xlsx.readFile(filePath);
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
             const data = xlsx.utils.sheet_to_json(sheet);
-
-            // Exemplo: [ { name: 'Sofia', to: '5512997655538', amount: 651 }, ... ]
-
+        
             for (const row of data) {
-                const { name, to, amount } = row;
-
-                const message = `Olá ${name}, você recebeu R$ ${amount} de cashback! Obrigado por comprar com a gente! 🎉`;
-
+              const { name, to, amount } = row;
+        
+              if (!name || !to || !amount) continue;
+        
+              const message = `Olá ${name}, você recebeu R$ ${amount} de cashback! Obrigado por comprar com a gente! 🎉`;
+        
+              setTimeout(async () => {
                 try {
-                    await client.sendText(to + '@c.us', message);
-                    console.log(`Mensagem enviada para ${name}`);
+                  await client.sendText(to + '@c.us', message);
+                  console.log(`Mensagem enviada para ${name} às ${sendTime.format('HH:mm:ss')}`);
                 } catch (err) {
-                    console.error(`Erro ao enviar para ${name}: ${err.message}`);
+                  console.error(`Erro ao enviar para ${name}: ${err.message}`);
                 }
+              }, delay);
+        
+              console.log(`Agendado envio para ${name} às ${sendTime.format('HH:mm:ss')}`);
             }
-            fs.unlinkSync(filePath); // Deleta o arquivo após o uso
-            res.json({ status: 'Mensagens enviadas com sucesso!' });
-
-        } catch (error) {
+        
+            fs.unlinkSync(filePath);
+            res.json({ status: 'Mensagens agendadas com sucesso!' });
+        
+          } catch (error) {
             console.error(error);
-            res.status(500).json({ error: 'Erro no processamento do Excel', detalhes: error.message });
-        }
+            res.status(500).json({ error: 'Erro no processamento', detalhes: error.message });
+          }
     })
 
+    // mandar mensagem manual
     app.post("/send-message", async(req, res) => {
         const {to, amount, name} = req.body
         
