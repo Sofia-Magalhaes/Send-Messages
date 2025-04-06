@@ -8,6 +8,9 @@
 <ul>
   <li>Colocar para usar planilha 🆗</li>
   <li>Fazer com que todo dia especifico mande mensagem</li>
-  <li>temporizador - mandar mensagem na hora que eu quiser</li>
+  <li>temporizador - mandar mensagem na hora que eu quiser 🆗</li>
   <li>Adicionar para colocar a varial valor 🆗</li>
+  <li>Mensagem com imagem 🆗</li>
+  <li>Mensagem com audio </li>
+  <li>Mensagem com audio e imagem </li> 
 </ul>
