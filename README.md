@@ -6,7 +6,8 @@
 <h2>Adições</h2>
 
 <ul>
-  <li>Colocar para usar planilha</li>
+  <li>Colocar para usar planilha 🆗</li>
   <li>Fazer com que todo dia especifico mande mensagem</li>
-  <li>Adicionar para colocar a varial valor</li>
+  <li>temporizador - mandar mensagem na hora que eu quiser</li>
+  <li>Adicionar para colocar a varial valor 🆗</li>
 </ul>
