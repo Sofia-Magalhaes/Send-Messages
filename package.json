@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,6 +12,8 @@
   "description": "",
   "dependencies": {
     "express": "^5.1.0",
-    "venom-bot": "github:orkestral/venom"
+    "multer": "^1.4.5-lts.2",
+    "venom-bot": "github:orkestral/venom",
+    "xlsx": "^0.18.5"
   }
 }

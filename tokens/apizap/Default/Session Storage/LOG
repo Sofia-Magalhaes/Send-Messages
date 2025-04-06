@@ -1,2 +1,3 @@
-2025/04/06-17:37:50.866 354c Creating DB C:\Users\sofia\Desktop\mensagem\tokens\apizap\Default\Session Storage since it was missing.
-2025/04/06-17:37:50.871 354c Reusing MANIFEST C:\Users\sofia\Desktop\mensagem\tokens\apizap\Default\Session Storage/MANIFEST-000001
+2025/04/06-19:04:34.659 16010 Reusing MANIFEST C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\Session Storage/MANIFEST-000001
+2025/04/06-19:04:34.660 16010 Recovering log #3
+2025/04/06-19:04:34.660 16010 Reusing old log C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\Session Storage/000003.log 
