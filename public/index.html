@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agendar Envio de Mensagens</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="container">
-    <h2>Agendar Envio de Mensagens</h2>
-    <form id="mensagemForm" enctype="multipart/form-data" method="post" action="http://localhost:3000/send-excel">
-      <label for="file">Arquivo Excel:</label>
-      <input type="file" name="file" id="file" required>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendar Envio de Mensagens</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Agendar Envio de Mensagens</h2>
+      <form id="mensagemForm" enctype="multipart/form-data" method="post"
+        action="http://localhost:3000/send-excel">
+        <label for="file">Arquivo Excel:</label>
+        <input type="file" name="file" id="file" required>
 
-      <label for="image">Imagem (upload):</label>
-      <input type="file" name="image" id="image">
+        <label for="image">Imagem (upload):</label>
+        <input type="file" name="image" id="image">
 
-      <label for="imageUrl">URL da imagem (opcional):</label>
-      <input type="text" name="imageUrl" id="imageUrl" placeholder="https://...">
+        <label for="imageUrl">URL da imagem (opcional):</label>
+        <input type="text" name="imageUrl" id="imageUrl"
+          placeholder="https://...">
 
-      <label for="audio">Áudio (opcional):</label>
-      <input type="file" name="audio" id="audio">
+        <label for="audio">Áudio (opcional):</label>
+        <input type="file" name="audio" id="audio">
 
-      <label for="sendAt">Horário para envio (formato HH:mm):</label>
-      <input type="time" name="sendAt" id="sendAt" required>
+        <label>Data e hora para envio:</label><br>
+        <input type="datetime-local" name="sendDateTime" required><br><br>
 
-      <button type="submit">Agendar envio</button>
-    </form>
-  </div>
-  <script src="script.js"></script>
-</body>
+        <button type="submit">Agendar envio</button>
+      </form>
+    </div>
+    <script src="script.js"></script>
+  </body>
 </html>
