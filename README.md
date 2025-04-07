@@ -13,7 +13,7 @@
 
 <hr>
 
-<h2>coisas para instalar para adicionar em novos pcs -  isso é antes do audio</h2>
+<h2>Coisas para instalar para adicionar em novos pcs -  isso é antes do audio</h2>
 npm install -g nodemon
 
 npm install express venom-bot multer xlsx dayjs axios uuid
