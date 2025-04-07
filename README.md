@@ -13,4 +13,5 @@
   <li>Mensagem com imagem 🆗</li>
   <li>Mensagem com audio </li>
   <li>Mensagem com audio e imagem </li> 
+  <li>Pagina para ver as funções</li> 
 </ul>
