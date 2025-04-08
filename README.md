@@ -22,6 +22,7 @@ npx puppeteer browsers install chrome
 
 npm install
 
+<hr>
 no insomnia 
 
 cuidado com o caminho da foto e da planilha
