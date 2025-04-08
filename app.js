@@ -59,11 +59,11 @@ function start(client) {
         const sendTime = dayjs(sendDateTime);
         const now = dayjs();
 
-        if (!sendTime.isValid() || sendTime.isBefore(now)) {
-          return res.status(400).json({ error: 'Data e hora inválidas ou no passado.' });
+        if (!sendTime.isValid()) {
+          return res.status(400).json({ error: 'Data e hora inválidas.' });
         }
+        const delay = Math.max(0, sendTime.diff(now, 'milliseconds'));
 
-        const delay = sendTime.diff(now, 'milliseconds');
         const excelPath = req.files['file'][0].path;
         const uploadedImagePath = req.files['image']?.[0]?.path;
         const uploadedAudioPath = req.files['audio']?.[0]?.path;
@@ -99,38 +99,38 @@ function start(client) {
         }
 
         // Validação da imagem
-        if (imagePath) {
-          if (!fs.existsSync(imagePath)) {
-            return res.status(400).json({ error: 'Arquivo de imagem não encontrado.' });
-          }
-        
+        if (imagePath && fs.existsSync(imagePath)) {
           const imageExt = path.extname(imagePath).toLowerCase();
           const allowedImageExtensions = ['.jpg', '.jpeg', '.png'];
-        
+
           if (!allowedImageExtensions.includes(imageExt)) {
             return res.status(400).json({ error: 'Formato de imagem inválido. Use .jpg, .jpeg ou .png' });
           }
+        } else {
+          imagePath = null; // Nenhuma imagem foi fornecida, ou caminho inválido
         }
 
         const workbook = xlsx.readFile(excelPath);
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const data = xlsx.utils.sheet_to_json(sheet);
+        console.log('Mensagem final:', data);
 
         for (const row of data) {
           const { name, to, amount } = row;
           if (!name || !to || !amount) continue;
 
           const message = customMessageTemplate
-            .replace(/\[NOME\]/g, name)
-            .replace(/\[VALOR\]/g, amount);
+            .replace(/\[NOME\]|\{name\}|\[name\]/gi, name)
+            .replace(/\[VALOR\]|\{amount\}|\[amount\]/gi, amount);
 
           setTimeout(async () => {
             try {
-              await client.sendText(to + '@c.us', message);
+              console.log('Mensagem final:', message);
+              await client.sendText('55' + to + '@c.us', message);
 
               if (imagePath) {
                 const imageName = path.basename(imagePath);
-                await client.sendImage(to + '@c.us', imagePath, imageName, 'Confira sua recompensa! 🎁');
+                await client.sendImage('55' + to + '@c.us', imagePath, imageName, 'Confira sua recompensa! 🎁');
               }
 
               // === ÁUDIO OPCIONAL DESATIVADO ===
