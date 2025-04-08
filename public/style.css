@@ -1,67 +1,93 @@
 body {
-    background: #f5f7fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-  
-  .container {
-    background: white;
-    padding: 30px 40px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    max-width: 500px;
-    width: 100%;
-  }
-  
-  h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 25px;
-  }
-  
-  label {
-    font-weight: 600;
-    display: block;
-    margin-top: 15px;
-    color: #555;
-  }
-  
-  input[type="file"],
-  input[type="text"],
-  input[type="time"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-  }
-  
-  button {
-    margin-top: 25px;
-    width: 100%;
-    padding: 12px;
-    background-color: #007BFF;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  @media (max-width: 500px) {
-    .container {
-      padding: 20px;
-    }
-  }
-  
+  font-family: Arial, sans-serif;
+  background-color: #fdfdfd;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+input[type="file"],
+input[type="text"],
+input[type="datetime-local"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+textarea {
+  height: 100px;
+}
+
+.linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.botoes-variaveis {
+  margin-top: 10px;
+}
+
+.botoes-variaveis button {
+  margin-right: 10px;
+  margin-top: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+}
+
+.botoes-variaveis button:hover {
+  background-color: #0056b3;
+}
+
+button[type="submit"],
+button[type="button"] {
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.mensagem-preview {
+  margin-top: 15px;
+  padding: 10px;
+  background: #e9f7ef;
+  border: 1px solid #28a745;
+  border-radius: 5px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}

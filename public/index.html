@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Agendar Envio de Mensagens</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Pequenos estilos só para o preview */
+      .mensagem-preview {
+        margin-top: 15px;
+        padding: 10px;
+        background: #e9f7ef;
+        border: 1px solid #28a745;
+        border-radius: 5px;
+        font-family: monospace;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
       <h2>Agendar Envio de Mensagens</h2>
-      <form id="mensagemForm" enctype="multipart/form-data" method="post"
-        action="http://localhost:3000/send-excel">
+      <form id="mensagemForm" enctype="multipart/form-data" method="post" action="http://localhost:3000/send-excel">
+
         <label for="file">Arquivo Excel:</label>
         <input type="file" name="file" id="file" required>
 
@@ -18,18 +29,29 @@
         <input type="file" name="image" id="image">
 
         <label for="imageUrl">URL da imagem (opcional):</label>
-        <input type="text" name="imageUrl" id="imageUrl"
-          placeholder="https://...">
+        <input type="text" name="imageUrl" id="imageUrl" placeholder="https://...">
 
-        <label for="audio">Áudio (opcional):</label>
-        <input type="file" name="audio" id="audio">
+        <label for="sendDateTime">Data e hora para envio:</label>
+        <input type="datetime-local" name="sendDateTime" id="sendDateTime" required>
 
-        <label>Data e hora para envio:</label><br>
-        <input type="datetime-local" name="sendDateTime" required><br><br>
+        <div class="linha">
+          <label for="mensagem">Mensagem:</label>
+          <button type="button" onclick="exibirMensagem()">Pré-visualizar</button>
+        </div>
+        <textarea id="mensagem" name="mensagem" placeholder="Ex: Olá [NOME], você tem R$ [VALOR] de cashback"></textarea>
+
+        <div class="botoes-variaveis">
+          <strong>Inserir variável:</strong><br>
+          <button type="button" onclick="inserirVariavel('{name}')">[NOME]</button>
+          <button type="button" onclick="inserirVariavel('{amount}')">[VALOR]</button>
+        </div>
+
+        <div id="mensagemExibida" class="mensagem-preview"></div>
 
         <button type="submit">Agendar envio</button>
       </form>
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>
