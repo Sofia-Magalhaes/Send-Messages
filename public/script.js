@@ -2,6 +2,7 @@ const textarea = document.getElementById('mensagem');
 const mensagemPreview = document.getElementById('mensagemExibida');
 const form = document.getElementById('mensagemForm');
 const fileInput = document.getElementById('file');
+const avisoPreview = document.getElementById('avisoPreview');
 
 let primeiraLinha = null; // aqui vamos guardar a 1ª linha da planilha
 
@@ -12,8 +13,6 @@ fileInput.addEventListener('change', async function (e) {
 
   const reader = new FileReader();
   reader.onload = function (event) {
-    //Função para mostrar que a pre-visualização só é mostrada via quando carregar o arquivo
-    document.getElementById('avisoPreview').style.display = 'block';
     const data = new Uint8Array(event.target.result);
     const workbook = XLSX.read(data, { type: 'array' });
     const sheetName = workbook.SheetNames[0];
@@ -22,6 +21,7 @@ fileInput.addEventListener('change', async function (e) {
 
     if (json.length > 0) {
       primeiraLinha = json[0];
+      avisoPreview.style.display = 'block'; // mostra o aviso
       console.log('✅ Primeira linha:', primeiraLinha);
       exibirMensagem(); // já atualiza o preview
     }
@@ -34,11 +34,21 @@ fileInput.addEventListener('change', async function (e) {
 function exibirMensagem() {
   let mensagem = textarea.value;
 
-  if (primeiraLinha) {
-    mensagem = mensagem
-      .replace(/\[NOME\]|\[name\]|\{name\}/gi, primeiraLinha.name || '')
-      .replace(/\[VALOR\]|\[amount\]|\{amount\}/gi, primeiraLinha.amount || '');
+  if (!primeiraLinha) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Nenhum dado disponível',
+      text: 'Faça o upload de um arquivo Excel válido antes de pré-visualizar a mensagem.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#3e8e41',
+      background: '#1f1f1f',
+      color: '#f1f1f1'
+    });
+    return;
   }
+  mensagem = mensagem
+    .replace(/\[NOME\]|\[name\]|\{name\}/gi, primeiraLinha.name || '')
+    .replace(/\[VALOR\]|\[amount\]|\{amount\}/gi, primeiraLinha.amount || '');
 
   mensagemPreview.innerText = mensagem;
 }
@@ -80,11 +90,21 @@ form.addEventListener('submit', async (e) => {
       window.location.href = './';
     } else {
       const errorData = await response.json();
-      alert(`Erro ao agendar envio: ${errorData.error || 'Erro desconhecido'}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro ao agendar envio',
+        text: errorData.error || 'Erro desconhecido',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#d33'
+      });
     }
   } catch (err) {
-    alert(`Erro de rede ou servidor: ${err.message}`);
+    Swal.fire({
+      icon: 'error',
+      title: 'Erro de rede ou servidor',
+      text: err.message,
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#d33'
+    });
   }
 });
-
-

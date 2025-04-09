@@ -1,28 +1,31 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #fdfdfd;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #17171B;
   margin: 0;
   padding: 20px;
+  color: #E0E0E0;
 }
 
 .container {
   max-width: 600px;
   margin: auto;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background: #1F1F23;
+  padding: 30px 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
 h2 {
   text-align: center;
-  color: #333;
+  color: #E0E0E0;
+  margin-bottom: 25px;
 }
 
 label {
   display: block;
-  margin-top: 15px;
-  font-weight: bold;
+  margin-top: 20px;
+  font-weight: 500;
+  color: #E0E0E0;
 }
 
 input[type="file"],
@@ -30,14 +33,26 @@ input[type="text"],
 input[type="datetime-local"],
 textarea {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #3A3A3A;
+  background-color: #2B2B2F;
+  color: #E0E0E0;
+}
+
+input[type="file"]::file-selector-button {
+  background-color: #444;
+  color: #E0E0E0;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 textarea {
   height: 100px;
+  resize: vertical;
 }
 
 .linha {
@@ -45,49 +60,56 @@ textarea {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .botoes-variaveis {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .botoes-variaveis button {
   margin-right: 10px;
-  margin-top: 5px;
-  padding: 5px 10px;
+  margin-top: 8px;
+  padding: 6px 12px;
   cursor: pointer;
-  border-radius: 5px;
-  background-color: #007bff;
+  border-radius: 6px;
+  background-color: #0066cc;
   border: none;
   color: white;
+  transition: background-color 0.3s;
 }
 
 .botoes-variaveis button:hover {
-  background-color: #0056b3;
+  background-color: #004999;
 }
 
 button[type="submit"],
 button[type="button"] {
-  margin-top: 20px;
+  margin-top: 25px;
   padding: 10px 15px;
-  background-color: #28a745;
+  background-color:#123f1d;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-button[type="submit"]:hover {
-  background-color: #218838;
+button[type="submit"]:hover,
+button[type="button"]:hover {
+  background-color: #123f1d;
 }
 
 .mensagem-preview {
-  margin-top: 15px;
-  padding: 10px;
-  background: #e9f7ef;
-  border: 1px solid #28a745;
-  border-radius: 5px;
-  font-family: monospace;
-  white-space: pre-wrap;
+  margin-top: 20px;
+  padding: 20px;
+  background: #1f1f23;
+  border: 1px solid #444;
+  border-left: 5px solid #28a745; /* destaque na borda esquerda */
+  border-radius: 8px;
+  font-family: "Courier New", monospace;
+  color: #17171B;
+  white-space: pre-line;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
 }

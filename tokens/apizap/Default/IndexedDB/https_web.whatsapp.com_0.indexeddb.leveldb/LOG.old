@@ -1,3 +1,24 @@
-2025/04/08-20:46:37.400 2eba8 Reusing MANIFEST C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/04/08-20:46:37.403 2eba8 Recovering log #3645
-2025/04/08-20:46:37.413 2eba8 Reusing old log C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/003645.log 
+2025/04/08-21:25:15.830 d194 Reusing MANIFEST C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/04/08-21:25:15.832 d194 Recovering log #3745
+2025/04/08-21:25:15.838 d194 Reusing old log C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/003745.log 
+2025/04/08-21:25:17.350 ec18 Level-0 table #3764: started
+2025/04/08-21:25:17.358 ec18 Level-0 table #3764: 182909 bytes OK
+2025/04/08-21:25:17.360 ec18 Delete type=0 #3745
+2025/04/08-21:25:17.364 ec18 Manual compaction at level-0 from '\x00\xaf\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\xb0\x00\x00\x00' @ 0 : 0; will stop at '\x00\xaf\x00\x00\x05' @ 12632035 : 1
+2025/04/08-21:25:17.365 ec18 Compacting 1@0 + 1@1 files
+2025/04/08-21:25:17.373 ec18 Generated table #3765@0: 4212 keys, 80906 bytes
+2025/04/08-21:25:17.384 ec18 Generated table #3766@0: 53 keys, 3697 bytes
+2025/04/08-21:25:17.384 ec18 Compacted 1@0 + 1@1 files => 84603 bytes
+2025/04/08-21:25:17.385 ec18 compacted to: files[ 0 2 27 0 0 0 0 ]
+2025/04/08-21:25:17.385 ec18 Delete type=2 #3764
+2025/04/08-21:25:17.386 d194 Manual compaction at level-0 from '\x00\xaf\x00\x00\x05' @ 12632035 : 1 .. '\x00\xb0\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/04/08-21:25:18.934 d7cc Compacting 1@1 + 2@2 files
+2025/04/08-21:25:19.025 d7cc Generated table #3767@1: 59560 keys, 2229446 bytes
+2025/04/08-21:25:19.101 d7cc Generated table #3768@1: 52346 keys, 2215081 bytes
+2025/04/08-21:25:19.104 d7cc Generated table #3769@1: 2 keys, 24560 bytes
+2025/04/08-21:25:19.104 d7cc Compacted 1@1 + 2@2 files => 4469087 bytes
+2025/04/08-21:25:19.105 d7cc compacted to: files[ 0 1 28 0 0 0 0 ]
+2025/04/08-21:25:19.105 d7cc Delete type=2 #3749
+2025/04/08-21:25:19.105 d7cc Delete type=2 #3756
+2025/04/08-21:25:19.106 d7cc Delete type=2 #3757
+2025/04/08-21:25:19.106 d7cc Delete type=2 #3765

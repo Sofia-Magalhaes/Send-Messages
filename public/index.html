@@ -20,7 +20,8 @@
   <body>
     <div class="container">
       <h2>Agendar Envio de Mensagens</h2>
-      <form id="mensagemForm" enctype="multipart/form-data" method="post" action="http://localhost:3000/send-excel">
+      <form id="mensagemForm" enctype="multipart/form-data" method="post"
+        action="http://localhost:3000/send-excel">
 
         <label for="file">Arquivo Excel:</label>
         <input type="file" name="file" id="file" required>
@@ -29,40 +30,44 @@
         <input type="file" name="image" id="image">
 
         <label for="imageUrl">URL da imagem (opcional):</label>
-        <input type="text" name="imageUrl" id="imageUrl" placeholder="https://...">
+        <input type="text" name="imageUrl" id="imageUrl"
+          placeholder="https://...">
 
         <label for="sendDateTime">Data e hora para envio:</label>
-        <input type="datetime-local" name="sendDateTime" id="sendDateTime" required>
+        <input type="datetime-local" name="sendDateTime" id="sendDateTime"
+          required>
 
         <div class="linha">
           <label for="mensagem">Mensagem:</label>
-          <button type="button" onclick="exibirMensagem()">Pré-visualizar</button>
+          <button type="button"
+            onclick="exibirMensagem()">Pré-visualizar</button>
         </div>
 
-       
-
-
-        <textarea id="mensagem" name="mensagem" placeholder="Ex: Olá [NOME], você tem R$ [VALOR] de cashback"></textarea>
+        <textarea id="mensagem" name="mensagem"
+          placeholder="Ex: Olá [NOME], você tem R$ [VALOR] de cashback"></textarea>
 
         <div class="botoes-variaveis">
           <strong>Inserir variável:</strong><br>
-          <button type="button" onclick="inserirVariavel('[name]')">NOME</button>
-          <button type="button" onclick="inserirVariavel('[amount]')">VALOR CASHBACK</button>
+          <button type="button"
+            onclick="inserirVariavel('[name]')">NOME</button>
+          <button type="button" onclick="inserirVariavel('[amount]')">VALOR
+            CASHBACK</button>
         </div>
 
         <div id="mensagemExibida" class="mensagem-preview"></div>
-        <p id="avisoPreview" style="display: none; font-size: 0.9em; color: #555; margin-top: 5px;">
-          * A pré-visualização mostra a mensagem com os dados do primeiro contato da planilha.
+        <p id="avisoPreview"
+          style="display: none; font-size: 0.9em; color: #555; margin-top: 5px;">
+          * A pré-visualização mostra a mensagem com os dados do primeiro
+          contato da planilha.
         </p>
-
 
         <button type="submit">Agendar envio</button>
       </form>
     </div>
 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-      
-    
   </body>
 </html>

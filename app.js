@@ -112,8 +112,7 @@ function start(client) {
 
         const workbook = xlsx.readFile(excelPath);
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const data = xlsx.utils.sheet_to_json(sheet);
-        console.log('Mensagem final:', data);
+        const data = xlsx.utils.sheet_to_json(sheet);        
 
         for (const row of data) {
           const { name, to, amount } = row;
@@ -124,8 +123,7 @@ function start(client) {
             .replace(/\[VALOR\]|\{amount\}|\[amount\]/gi, amount);
 
           setTimeout(async () => {
-            try {
-              console.log('Mensagem final:', message);
+            try {              
               await client.sendText('55' + to + '@c.us', message);
 
               if (imagePath) {
