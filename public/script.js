@@ -2,12 +2,16 @@ const textarea = document.getElementById('mensagem');
 const mensagemPreview = document.getElementById('mensagemExibida');
 const form = document.getElementById('mensagemForm');
 const fileInput = document.getElementById('file');
-const avisoPreview = document.getElementById('avisoPreview');
 const imageInput = document.getElementById('image');
+const avisoPreview = document.getElementById('avisoPreview');
 
-let primeiraLinha = null; // aqui vamos guardar a 1ª linha da planilha
+const excelFileName = document.getElementById('excelFileName');
+const imageFileName = document.getElementById('imageFileName');
+const imagePreview = document.getElementById('imagePreview');
 
-// Ler o Excel e pegar a primeira linha
+let primeiraLinha = null;
+
+// Leitura do Excel
 fileInput.addEventListener('change', async function (e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -22,25 +26,24 @@ fileInput.addEventListener('change', async function (e) {
 
     if (json.length > 0) {
       primeiraLinha = json[0];
-      avisoPreview.style.display = 'block'; // mostra o aviso
+      avisoPreview.style.display = 'block';
       console.log('✅ Primeira linha:', primeiraLinha);
-      exibirMensagem(); // já atualiza o preview
+      exibirMensagem();
     }
   };
-
   reader.readAsArrayBuffer(file);
 });
 
 function normalizarTexto(texto) {
   return texto
     .toLowerCase()
-    .normalize("NFD") // separa acentos das letras
-    .replace(/[\u0300-\u036f]/g, "") // remove acentos
-    .replace(/\s+/g, " ") // remove espaços duplicados
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
-// Atualiza o preview da mensagem com variáveis reais
+// Exibir mensagem formatada no preview
 function exibirMensagem() {
   let mensagem = textarea.value.trim();
 
@@ -69,13 +72,12 @@ function exibirMensagem() {
     });
   }
 
-  // Corrigido: imageFile agora é definida corretamente
   const imageFile = imageInput.files[0];
 
   if (imageFile && imageFile.type.startsWith('image/')) {
     const legenda = document.getElementById('legendaImagem').value.trim();
     const reader = new FileReader();
-  
+
     reader.onload = function (event) {
       mensagemPreview.innerHTML = `
         <p>${mensagem.replace(/\n/g, '<br>')}</p>
@@ -83,27 +85,123 @@ function exibirMensagem() {
         ${legenda ? `<p style="margin-top: 5px; color: #555;">${legenda}</p>` : ''}
       `;
     };
-  
     reader.readAsDataURL(imageFile);
   } else {
     mensagemPreview.innerHTML = `<p>${mensagem.replace(/\n/g, '<br>')}</p>`;
   }
 }
 
+// Inserir variável no cursor
+function inserirVariavel(variavel) {
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const text = textarea.value;
 
-// Atualiza visualização em tempo real
+  const before = text.substring(0, start);
+  const after = text.substring(end);
+
+  textarea.value = before + variavel + after;
+  textarea.selectionStart = textarea.selectionEnd = start + variavel.length;
+  textarea.focus();
+
+  exibirMensagem();
+}
+
+// Atualização em tempo real da mensagem
 textarea.addEventListener('input', exibirMensagem);
 
-imageInput.addEventListener('change', exibirMensagem);
+// Mostrar nome do arquivo Excel
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  excelFileName.textContent = file ? `📄 Selecionado: ${file.name}` : '';
+});
 
-// Intercepta o envio do formulário
+// Mostrar nome e ativar preview da imagem
+imageInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+
+  imageFileName.textContent = file ? `🖼️ Selecionado: ${file.name}` : '';
+
+  // Mostrar campo da legenda se imagem for válida
+  const campoLegenda = document.getElementById('campoLegenda');
+  const legendaInput = document.getElementById('legendaImagem');
+
+  if (file && file.type.startsWith('image/')) {
+    campoLegenda.style.display = 'block';
+  } else {
+    campoLegenda.style.display = 'none';
+    legendaInput.value = '';
+  }
+
+  exibirMensagem();
+});
+
+// Tema claro/escuro
+const toggleButton = document.getElementById('toggleDarkMode');
+const themeIcon = document.getElementById('themeIcon');
+
+toggleButton.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  themeIcon.textContent = isDark ? '🌙' : '🌞';
+  themeIcon.classList.add('rotate-180');
+  setTimeout(() => themeIcon.classList.remove('rotate-180'), 300);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  const html = document.documentElement;
+  const isDark = savedTheme === 'dark';
+  html.classList.toggle('dark', isDark);
+  if (isDark) themeIcon.textContent = '🌙';
+});
+
+// Validação de arquivos antes do envio
 form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+  const excelFile = fileInput.files[0];
+  const imageFile = imageInput.files[0];
 
+  // Verifica Excel
+  if (excelFile) {
+    const validExcelTypes = [
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ];
+    if (!validExcelTypes.includes(excelFile.type)) {
+      e.preventDefault();
+      Swal.fire({
+        icon: 'error',
+        title: 'Arquivo inválido',
+        text: 'Por favor, envie um arquivo Excel (.xls ou .xlsx).',
+      });
+      return;
+    }
+  }
+
+  // Verifica imagem
+  if (imageFile) {
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validImageTypes.includes(imageFile.type)) {
+      e.preventDefault();
+      Swal.fire({
+        icon: 'error',
+        title: 'Imagem inválida',
+        text: 'Por favor, envie uma imagem válida (.jpg, .png, .gif, .webp).',
+      });
+      return;
+    }
+  }
+
+  // Envio do formulário
   const formData = new FormData(form);
-
   try {
-    const response = await fetch('https://seu-projeto.onrender.com/send-excel', {
+    // Para alternar entre local e produção
+    const BASE_URL = window.location.hostname === "localhost"
+      ? "http://localhost:3000"
+      : "https://seu-projeto.onrender.com";
+
+    const response = await fetch(`${BASE_URL}/send-excel`, {
       method: 'POST',
       body: formData,
     });
@@ -140,118 +238,5 @@ form.addEventListener('submit', async (e) => {
       confirmButtonText: 'OK',
       confirmButtonColor: '#d33'
     });
-  }
-});
-
-// White/Dark Mode Toggle
-const toggleButton = document.getElementById('toggleDarkMode');
-const themeIcon = document.getElementById('themeIcon');
-
-toggleButton.addEventListener('click', () => {
-  const html = document.documentElement;
-  const isDark = html.classList.toggle('dark');
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  themeIcon.textContent = isDark ? '🌙' : '🌞';
-  themeIcon.classList.add('rotate-180');
-  setTimeout(() => themeIcon.classList.remove('rotate-180'), 300);
-});
-
-window.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('theme');
-  const html = document.documentElement;
-  const isDark = savedTheme === 'dark';
-  html.classList.toggle('dark', isDark);
-  if (isDark) themeIcon.textContent = '🌙';
-});
-
-document.getElementById('mensagemForm').addEventListener('submit', function (e) {
-  const excelFileInput = document.getElementById('file');
-  const imageFileInput = document.getElementById('image');
-
-  const excelFile = excelFileInput.files[0];
-  const imageFile = imageFileInput.files[0];
-
-  // Verifica tipo de arquivo do Excel
-  if (excelFile) {
-    const validExcelTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-    if (!validExcelTypes.includes(excelFile.type)) {
-      e.preventDefault();
-      Swal.fire({
-        icon: 'error',
-        title: 'Arquivo inválido',
-        text: 'Por favor, envie um arquivo Excel (.xls ou .xlsx).',
-      });
-      return;
-    }
-  }
-
-  // Verifica tipo de arquivo da imagem (se fornecida)
-  if (imageFile) {
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!validImageTypes.includes(imageFile.type)) {
-      e.preventDefault();
-      Swal.fire({
-        icon: 'error',
-        title: 'Imagem inválida',
-        text: 'Por favor, envie uma imagem válida (.jpg, .png, .gif, .webp).',
-      });
-      return;
-    }
-  }
-});
-
-
-const excelInput = document.getElementById('file');
-const excelFileName = document.getElementById('excelFileName');
-const imageFileName = document.getElementById('imageFileName');
-const imagePreview = document.getElementById('imagePreview');
-
-// Mostrar nome do arquivo Excel
-excelInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  excelFileName.textContent = file ? `📄 Selecionado: ${file.name}` : '';
-});
-
-// Mostrar nome e preview da imagem
-imageInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    imageFileName.textContent = `🖼️ Selecionado: ${file.name}`;
-  } else {
-    imageFileName.textContent = '';
-  }
-});
-
-// Atualizar preview da mensagem também quando a imagem for alterada
-imageInput.addEventListener('change', () => {
-  exibirMensagem();
-});
-
-// Insere variável onde o cursor estiver
-function inserirVariavel(variavel) {
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  const text = textarea.value;
-
-  const before = text.substring(0, start);
-  const after = text.substring(end);
-
-  textarea.value = before + variavel + after;
-  textarea.selectionStart = textarea.selectionEnd = start + variavel.length;
-  textarea.focus();
-
-  exibirMensagem();
-}
-
-imageInput.addEventListener('change', () => {
-  const campoLegenda = document.getElementById('campoLegenda');
-  const legendaInput = document.getElementById('legendaImagem');
-  const file = imageInput.files[0];
-
-  if (file && file.type.startsWith('image/')) {
-    campoLegenda.style.display = 'block';
-  } else {
-    campoLegenda.style.display = 'none';
-    legendaInput.value = ''; // Limpa legenda se não for imagem
   }
 });
