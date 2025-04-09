@@ -3,6 +3,7 @@ const mensagemPreview = document.getElementById('mensagemExibida');
 const form = document.getElementById('mensagemForm');
 const fileInput = document.getElementById('file');
 const avisoPreview = document.getElementById('avisoPreview');
+const imageInput = document.getElementById('image');
 
 let primeiraLinha = null; // aqui vamos guardar a 1ª linha da planilha
 
@@ -30,15 +31,24 @@ fileInput.addEventListener('change', async function (e) {
   reader.readAsArrayBuffer(file);
 });
 
+function normalizarTexto(texto) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD") // separa acentos das letras
+    .replace(/[\u0300-\u036f]/g, "") // remove acentos
+    .replace(/\s+/g, " ") // remove espaços duplicados
+    .trim();
+}
+
 // Atualiza o preview da mensagem com variáveis reais
 function exibirMensagem() {
-  let mensagem = textarea.value;
+  let mensagem = textarea.value.trim();
 
-  if (!primeiraLinha) {
+  if (mensagem && !primeiraLinha) {
     Swal.fire({
       icon: 'warning',
-      title: 'Nenhum dado disponível',
-      text: 'Faça o upload de um arquivo Excel válido antes de pré-visualizar a mensagem.',
+      title: 'Excel obrigatório',
+      text: 'Você precisa carregar um arquivo Excel para usar variáveis na mensagem.',
       confirmButtonText: 'OK',
       confirmButtonColor: '#3e8e41',
       background: '#1f1f1f',
@@ -47,34 +57,40 @@ function exibirMensagem() {
     return;
   }
 
-  // Ajuste aqui com os nomes corretos
-  const nome = primeiraLinha.Nome || primeiraLinha.name || '';
-  const valor = primeiraLinha.Valor || primeiraLinha.amount || '';
+  if (primeiraLinha) {
+    mensagem = mensagem.replace(/\[([^\]]+)\]/g, (match, key) => {
+      const chaveNormalizada = normalizarTexto(key);
+      for (const coluna in primeiraLinha) {
+        if (normalizarTexto(coluna) === chaveNormalizada) {
+          return primeiraLinha[coluna];
+        }
+      }
+      return match;
+    });
+  }
 
-  mensagem = mensagem
-    .replace(/\[NOME\]|\[name\]|\{name\}/gi, nome)
-    .replace(/\[VALOR\]|\[amount\]|\{amount\}/gi, valor);
+  // Corrigido: imageFile agora é definida corretamente
+  const imageFile = imageInput.files[0];
 
-  mensagemPreview.innerText = mensagem;
+  if (imageFile && imageFile.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      mensagemPreview.innerHTML = `
+        <p>${mensagem.replace(/\n/g, '<br>')}</p>
+        <img src="${event.target.result}" alt="Imagem da mensagem" style="max-width: 100%; margin-top: 10px; border-radius: 8px;">
+      `;
+    };
+    reader.readAsDataURL(imageFile);
+  } else {
+    mensagemPreview.innerHTML = `<p>${mensagem.replace(/\n/g, '<br>')}</p>`;
+  }
 }
-// Insere variável onde o cursor estiver
-function inserirVariavel(variavel) {
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  const text = textarea.value;
 
-  const before = text.substring(0, start);
-  const after = text.substring(end);
-
-  textarea.value = before + variavel + after;
-  textarea.selectionStart = textarea.selectionEnd = start + variavel.length;
-  textarea.focus();
-
-  exibirMensagem();
-}
 
 // Atualiza visualização em tempo real
 textarea.addEventListener('input', exibirMensagem);
+
+imageInput.addEventListener('change', exibirMensagem);
 
 // Intercepta o envio do formulário
 form.addEventListener('submit', async (e) => {
@@ -123,23 +139,102 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-  // White/Dark Mode Toggle
-  const toggleButton = document.getElementById('toggleDarkMode');
-  const themeIcon = document.getElementById('themeIcon');
-  
-  toggleButton.addEventListener('click', () => {
-    const html = document.documentElement;
-    const isDark = html.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    themeIcon.textContent = isDark ? '🌙' : '🌞';
-    themeIcon.classList.add('rotate-180');
-    setTimeout(() => themeIcon.classList.remove('rotate-180'), 300);
-  });
-  
-  window.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme');
-    const html = document.documentElement;
-    const isDark = savedTheme === 'dark';
-    html.classList.toggle('dark', isDark);
-    if (isDark) themeIcon.textContent = '🌙';
-  });
+// White/Dark Mode Toggle
+const toggleButton = document.getElementById('toggleDarkMode');
+const themeIcon = document.getElementById('themeIcon');
+
+toggleButton.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  themeIcon.textContent = isDark ? '🌙' : '🌞';
+  themeIcon.classList.add('rotate-180');
+  setTimeout(() => themeIcon.classList.remove('rotate-180'), 300);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  const html = document.documentElement;
+  const isDark = savedTheme === 'dark';
+  html.classList.toggle('dark', isDark);
+  if (isDark) themeIcon.textContent = '🌙';
+});
+
+document.getElementById('mensagemForm').addEventListener('submit', function (e) {
+  const excelFileInput = document.getElementById('file');
+  const imageFileInput = document.getElementById('image');
+
+  const excelFile = excelFileInput.files[0];
+  const imageFile = imageFileInput.files[0];
+
+  // Verifica tipo de arquivo do Excel
+  if (excelFile) {
+    const validExcelTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+    if (!validExcelTypes.includes(excelFile.type)) {
+      e.preventDefault();
+      Swal.fire({
+        icon: 'error',
+        title: 'Arquivo inválido',
+        text: 'Por favor, envie um arquivo Excel (.xls ou .xlsx).',
+      });
+      return;
+    }
+  }
+
+  // Verifica tipo de arquivo da imagem (se fornecida)
+  if (imageFile) {
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validImageTypes.includes(imageFile.type)) {
+      e.preventDefault();
+      Swal.fire({
+        icon: 'error',
+        title: 'Imagem inválida',
+        text: 'Por favor, envie uma imagem válida (.jpg, .png, .gif, .webp).',
+      });
+      return;
+    }
+  }
+});
+
+
+const excelInput = document.getElementById('file');
+const excelFileName = document.getElementById('excelFileName');
+const imageFileName = document.getElementById('imageFileName');
+const imagePreview = document.getElementById('imagePreview');
+
+// Mostrar nome do arquivo Excel
+excelInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  excelFileName.textContent = file ? `📄 Selecionado: ${file.name}` : '';
+});
+
+// Mostrar nome e preview da imagem
+imageInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    imageFileName.textContent = `🖼️ Selecionado: ${file.name}`;
+  } else {
+    imageFileName.textContent = '';
+  }
+});
+
+// Atualizar preview da mensagem também quando a imagem for alterada
+imageInput.addEventListener('change', () => {
+  exibirMensagem();
+});
+
+// Insere variável onde o cursor estiver
+function inserirVariavel(variavel) {
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const text = textarea.value;
+
+  const before = text.substring(0, start);
+  const after = text.substring(end);
+
+  textarea.value = before + variavel + after;
+  textarea.selectionStart = textarea.selectionEnd = start + variavel.length;
+  textarea.focus();
+
+  exibirMensagem();
+}
