@@ -46,13 +46,17 @@ function exibirMensagem() {
     });
     return;
   }
+
+  // Ajuste aqui com os nomes corretos
+  const nome = primeiraLinha.Nome || primeiraLinha.name || '';
+  const valor = primeiraLinha.Valor || primeiraLinha.amount || '';
+
   mensagem = mensagem
-    .replace(/\[NOME\]|\[name\]|\{name\}/gi, primeiraLinha.name || '')
-    .replace(/\[VALOR\]|\[amount\]|\{amount\}/gi, primeiraLinha.amount || '');
+    .replace(/\[NOME\]|\[name\]|\{name\}/gi, nome)
+    .replace(/\[VALOR\]|\[amount\]|\{amount\}/gi, valor);
 
   mensagemPreview.innerText = mensagem;
 }
-
 // Insere variável onde o cursor estiver
 function inserirVariavel(variavel) {
   const start = textarea.selectionStart;
@@ -87,7 +91,17 @@ form.addEventListener('submit', async (e) => {
     if (response.ok) {
       const data = await response.json();
       console.log('✅ Resposta do servidor:', data);
-      window.location.href = './';
+      Swal.fire({
+        icon: 'success',
+        title: 'Agendamento realizado!',
+        text: 'Sua mensagem foi agendada com sucesso.',
+        confirmButtonText: 'Beleza!',
+        confirmButtonColor: '#28a745',
+        background: '#f0fff4',
+        color: '#333'
+      }).then(() => {
+        window.location.href = './';
+      });
     } else {
       const errorData = await response.json();
       Swal.fire({
@@ -108,3 +122,24 @@ form.addEventListener('submit', async (e) => {
     });
   }
 });
+
+  // White/Dark Mode Toggle
+  const toggleButton = document.getElementById('toggleDarkMode');
+  const themeIcon = document.getElementById('themeIcon');
+  
+  toggleButton.addEventListener('click', () => {
+    const html = document.documentElement;
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    themeIcon.textContent = isDark ? '🌙' : '🌞';
+    themeIcon.classList.add('rotate-180');
+    setTimeout(() => themeIcon.classList.remove('rotate-180'), 300);
+  });
+  
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    const html = document.documentElement;
+    const isDark = savedTheme === 'dark';
+    html.classList.toggle('dark', isDark);
+    if (isDark) themeIcon.textContent = '🌙';
+  });
