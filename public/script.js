@@ -199,7 +199,7 @@ form.addEventListener('submit', async (e) => {
     // Para alternar entre local e produção
     const BASE_URL = window.location.hostname === "localhost"
       ? "http://localhost:3000"
-      : "https://seu-projeto.onrender.com";
+      : "https://send-messages-p3xi.onrender.com";
 
     const response = await fetch(`${BASE_URL}/send-excel`, {
       method: 'POST',
