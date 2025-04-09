@@ -112,7 +112,7 @@ function start(client) {
 
         const workbook = xlsx.readFile(excelPath);
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const data = xlsx.utils.sheet_to_json(sheet);        
+        const data = xlsx.utils.sheet_to_json(sheet);
 
         for (const row of data) {
           const { name, to, amount } = row;
@@ -123,12 +123,13 @@ function start(client) {
             .replace(/\[VALOR\]|\{amount\}|\[amount\]/gi, amount);
 
           setTimeout(async () => {
-            try {              
+            try {
               await client.sendText('55' + to + '@c.us', message);
 
               if (imagePath) {
                 const imageName = path.basename(imagePath);
-                await client.sendImage('55' + to + '@c.us', imagePath, imageName, 'Confira sua recompensa! 🎁');
+                const legenda = req.body.legenda?.trim() || '';
+                await client.sendImage('55' + to + '@c.us', imagePath, imageName, legenda);
               }
 
               // === ÁUDIO OPCIONAL DESATIVADO ===

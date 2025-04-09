@@ -73,13 +73,17 @@ function exibirMensagem() {
   const imageFile = imageInput.files[0];
 
   if (imageFile && imageFile.type.startsWith('image/')) {
+    const legenda = document.getElementById('legendaImagem').value.trim();
     const reader = new FileReader();
+  
     reader.onload = function (event) {
       mensagemPreview.innerHTML = `
         <p>${mensagem.replace(/\n/g, '<br>')}</p>
         <img src="${event.target.result}" alt="Imagem da mensagem" style="max-width: 100%; margin-top: 10px; border-radius: 8px;">
+        ${legenda ? `<p style="margin-top: 5px; color: #555;">${legenda}</p>` : ''}
       `;
     };
+  
     reader.readAsDataURL(imageFile);
   } else {
     mensagemPreview.innerHTML = `<p>${mensagem.replace(/\n/g, '<br>')}</p>`;
@@ -238,3 +242,16 @@ function inserirVariavel(variavel) {
 
   exibirMensagem();
 }
+
+imageInput.addEventListener('change', () => {
+  const campoLegenda = document.getElementById('campoLegenda');
+  const legendaInput = document.getElementById('legendaImagem');
+  const file = imageInput.files[0];
+
+  if (file && file.type.startsWith('image/')) {
+    campoLegenda.style.display = 'block';
+  } else {
+    campoLegenda.style.display = 'none';
+    legendaInput.value = ''; // Limpa legenda se não for imagem
+  }
+});
