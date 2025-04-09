@@ -103,7 +103,7 @@ form.addEventListener('submit', async (e) => {
   const formData = new FormData(form);
 
   try {
-    const response = await fetch('http://localhost:3000/send-excel', {
+    const response = await fetch('https://seu-projeto.onrender.com/send-excel', {
       method: 'POST',
       body: formData,
     });
