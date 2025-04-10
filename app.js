@@ -12,7 +12,7 @@ const venom = require('venom-bot');
 const app = express();
 app.use(cors());
 app.use(express.json());
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 // ✅ Servir arquivos estáticos (como index.html)
 app.use(express.static('public'));
@@ -204,8 +204,6 @@ function start(client) {
     }
   });
 }
-
-
 
 app.listen(port, () => {
   console.log(`🚀 API rodando em http://localhost:${port}`);
