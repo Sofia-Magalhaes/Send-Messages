@@ -205,7 +205,8 @@ function start(client) {
   });
 }
 
+
+
 app.listen(port, () => {
   console.log(`🚀 API rodando em http://localhost:${port}`);
 });
-
