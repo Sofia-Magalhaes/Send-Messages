@@ -49,7 +49,7 @@ venom
 
 function start(client) {
   app.post(
-    'https://seusite.onrender.com/send-excel',
+    '/send-excel',
     upload.fields([{ name: 'file' }, { name: 'image' }, { name: 'audio' }]),
     async (req, res) => {
       try {
