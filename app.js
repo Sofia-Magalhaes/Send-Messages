@@ -41,7 +41,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 venom
-  .create({ session: 'apizap' })
+  .create({ session: 'apizap', headless: false })
   .then((client) => start(client))
   .catch((erro) => {
     console.log(erro);
@@ -114,7 +114,9 @@ function start(client) {
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const data = xlsx.utils.sheet_to_json(sheet);
 
-        for (const row of data) {
+        const intervaloEntreMensagens = 60 * 1000; 
+
+        for (const [i, row] of data.entries()) {
           const { name, to, amount } = row;
           if (!name || !to || !amount) continue;
 
@@ -132,45 +134,13 @@ function start(client) {
                 await client.sendImage('55' + to + '@c.us', imagePath, imageName, legenda);
               }
 
-              // === ÁUDIO OPCIONAL DESATIVADO ===
-              /*
-              if (uploadedAudioPath) {
-                const audioExt = path.extname(uploadedAudioPath).toLowerCase();
-                const allowedAudioExtensions = ['.mp3', '.m4a'];
-  
-                if (!allowedAudioExtensions.includes(audioExt)) {
-                  console.warn(`❌ Formato de áudio inválido: ${audioExt}`);
-                } else {
-                  audioOutputPath = uploadedAudioPath.replace(audioExt, '.ogg');
-  
-                  await new Promise((resolve, reject) => {
-                    ffmpeg(uploadedAudioPath)
-                      .audioCodec('libopus')
-                      .audioBitrate('64k')
-                      .format('ogg')
-                      .on('end', () => {
-                        console.log('✅ Áudio convertido:', audioOutputPath);
-                        resolve();
-                      })
-                      .on('error', (err) => {
-                        console.error('❌ Erro na conversão de áudio:', err.message);
-                        reject(err);
-                      })
-                      .save(audioOutputPath);
-                  });
-  
-                  await client.sendPtt(to + '@c.us', audioOutputPath);
-                }
-              }
-              */
-
               console.log(`✅ Mensagem enviada para ${name} às ${sendTime.format('YYYY-MM-DD HH:mm:ss')}`);
             } catch (err) {
               console.error(`❌ Erro ao enviar para ${name}:`, err);
             }
-          }, delay);
+          }, delay + i * intervaloEntreMensagens);
 
-          console.log(`⏳ Agendado envio para ${name} às ${sendTime.format('YYYY-MM-DD HH:mm:ss')}`);
+          console.log(`⏳ Agendado envio para ${name} às ${sendTime.add(i * (intervaloEntreMensagens / 1000), 'seconds').format('YYYY-MM-DD HH:mm:ss')}`);
         }
 
         // Limpeza automática
