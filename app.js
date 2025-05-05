@@ -114,16 +114,20 @@ function start(client) {
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const data = xlsx.utils.sheet_to_json(sheet);
 
-        const intervaloEntreMensagens = 60 * 1000; 
+        const intervaloEntreMensagens = 60 * 1000;
 
         for (const [i, row] of data.entries()) {
-          const { name, to, amount } = row;
-          if (!name || !to || !amount) continue;
-
+          const { name, to, amount, purchase_date } = row;
+          if (!name || !to || !amount || !purchase_date) continue;
+        
+          // Pegando só dia/mês
+          const diaMes = dayjs(purchase_date, 'DD/MM/YYYY').format('DD/MM');
+        
           const message = customMessageTemplate
-            .replace(/\[NOME\]|\{name\}|\[name\]/gi, name)
-            .replace(/\[VALOR\]|\{amount\}|\[amount\]/gi, amount);
-
+            .replace(/$$\s*NOME\s*$$|{name}|$$name$$/gi, name)
+            .replace(/$$\s*VALOR\s*$$|{amount}|$$amount$$/gi, amount)
+            .replace(/$$\s*DATA\s*$$|$$\s*purchase_date\s*$$|{purchase_date}/gi, diaMes);
+            
           setTimeout(async () => {
             try {
               await client.sendText('55' + to + '@c.us', message);
