@@ -120,13 +120,10 @@ function start(client) {
           const { name, to, amount, purchase_date } = row;
           if (!name || !to || !amount || !purchase_date) continue;
         
-          // Pegando só dia/mês
-          const diaMes = dayjs(purchase_date, 'DD/MM/YYYY').format('DD/MM');
-        
           const message = customMessageTemplate
-            .replace(/$$\s*NOME\s*$$|{name}|$$name$$/gi, name)
-            .replace(/$$\s*VALOR\s*$$|{amount}|$$amount$$/gi, amount)
-            .replace(/$$\s*DATA\s*$$|$$\s*purchase_date\s*$$|{purchase_date}/gi, diaMes);
+            .replace(/\[NOME\]|\{name\}|\[name\]/gi, name)
+            .replace(/\[VALOR\]|\{amount\}|\[amount\]/gi, amount)
+            .replace(/\[DATA\]|\{purchase_date\}|\[purchase_date\]/gi, purchase_date);
             
           setTimeout(async () => {
             try {
