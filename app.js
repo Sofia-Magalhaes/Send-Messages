@@ -114,17 +114,37 @@ function start(client) {
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const data = xlsx.utils.sheet_to_json(sheet);
 
-        const intervaloEntreMensagens = 60 * 1000;
+        // Pegue os valores do corpo da requisição
+        const { intervalValue, intervalUnit } = req.body;
 
+        // Validação e conversão segura para número
+        const value = parseInt(intervalValue, 10);
+        let intervaloEntreMensagens = 0;
+
+        switch (intervalUnit) {
+          case 'seconds':
+            intervaloEntreMensagens = value * 1000;
+            break;
+          case 'minutes':
+            intervaloEntreMensagens = value * 60 * 1000;
+            break;
+          case 'hours':
+            intervaloEntreMensagens = value * 60 * 60 * 1000;
+            break;
+          default:
+            intervaloEntreMensagens = 60 * 1000; // fallback: 1 minuto
+        }
+
+        // Loop com agendamento baseado no intervalo escolhido
         for (const [i, row] of data.entries()) {
           const { name, to, amount, purchase_date } = row;
           if (!name || !to || !amount || !purchase_date) continue;
-        
+
           const message = customMessageTemplate
             .replace(/\[NOME\]|\{name\}|\[name\]/gi, name)
             .replace(/\[VALOR\]|\{amount\}|\[amount\]/gi, amount)
             .replace(/\[DATA\]|\{purchase_date\}|\[purchase_date\]/gi, purchase_date);
-            
+
           setTimeout(async () => {
             try {
               await client.sendText('55' + to + '@c.us', message);

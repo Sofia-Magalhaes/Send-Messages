@@ -78,6 +78,32 @@
             class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
         </div>
 
+        <div class="mb-4">
+          <label for="intervalValue" class="block font-medium mb-1">⏱️ Intervalo
+            entre mensagens:</label>
+
+          <div class="flex items-center gap-2">
+            <input
+              type="number"
+              id="intervalValue"
+              name="intervalValue"
+              min="1"
+              placeholder="Ex: 5"
+              required
+              class="w-24 px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
+
+            <select
+              id="intervalUnit"
+              name="intervalUnit"
+              class="px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded">              
+              <option value="minutes" selected>Minutos</option>
+              <option value="hours">Horas</option>
+            </select>
+          </div>
+
+          <small class="text-gray-500">Exemplo: 1 minuto ou 2 horas.</small>
+        </div>
+
         <div class="flex items-center justify-between">
           <label for="mensagem" class="font-medium">💬 Mensagem:</label>
           <button type="button" onclick="exibirMensagem()"
