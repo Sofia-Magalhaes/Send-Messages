@@ -155,6 +155,23 @@ function start(client) {
                 await client.sendImage('55' + to + '@c.us', imagePath, imageName, legenda);
               }
 
+              try {
+                // await enviarMensagem({ number: to, name }); // função real de envio
+
+                enviarProgresso({
+                  status: 'enviado',
+                  name,
+                  number: to,
+                  index: i + 1,
+                  total: data.length,
+                  timestamp: new Date().toISOString(),
+                });
+
+              } catch (error) {
+                console.error(`Erro ao enviar para ${name}:`, error.message);
+              }
+
+
               console.log(`✅ Mensagem enviada para ${name} às ${sendTime.format('YYYY-MM-DD HH:mm:ss')}`);
             } catch (err) {
               console.error(`❌ Erro ao enviar para ${name}:`, err);
@@ -196,6 +213,32 @@ function start(client) {
   });
 }
 
+//rota SSE 
+const clientesConectados = []; // <-- Adicione isso no topo do seu server.js
+
+app.get('/progresso', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+
+  clientesConectados.push(res);
+
+  req.on('close', () => {
+    const index = clientesConectados.indexOf(res);
+    if (index !== -1) {
+      clientesConectados.splice(index, 1);
+    }
+  });
+});
+
+function enviarProgresso(dado) {
+  clientesConectados.forEach(res => {
+    res.write(`data: ${JSON.stringify(dado)}\n\n`);
+  });
+}
+
+//porta
 app.listen(port, () => {
   console.log(`🚀 API rodando em http://localhost:${port}`);
 });

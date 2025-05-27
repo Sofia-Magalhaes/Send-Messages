@@ -75,7 +75,7 @@ function exibirMensagem() {
   if (imageFile && imageFile.type.startsWith('image/')) {
     const legenda = document.getElementById('legendaImagem').value.trim();
     const reader = new FileReader();
-  
+
     reader.onload = function (event) {
       mensagemPreview.innerHTML = `
         <p>${mensagem.replace(/\n/g, '<br>')}</p>
@@ -83,7 +83,7 @@ function exibirMensagem() {
         ${legenda ? `<p style="margin-top: 5px; color: #555;">${legenda}</p>` : ''}
       `;
     };
-  
+
     reader.readAsDataURL(imageFile);
   } else {
     mensagemPreview.innerHTML = `<p>${mensagem.replace(/\n/g, '<br>')}</p>`;
@@ -119,9 +119,7 @@ form.addEventListener('submit', async (e) => {
         confirmButtonColor: '#28a745',
         background: '#f0fff4',
         color: '#333'
-      }).then(() => {
-        window.location.href = './';
-      });
+      })
     } else {
       const errorData = await response.json();
       Swal.fire({
@@ -255,3 +253,31 @@ imageInput.addEventListener('change', () => {
     legendaInput.value = ''; // Limpa legenda se não for imagem
   }
 });
+
+const evento = new EventSource('/progresso');
+
+let totalEnviados = 0;
+let totalMensagens = 0;
+
+evento.onmessage = function(event) {
+  const data = JSON.parse(event.data);
+  const progressoDiv = document.getElementById('progresso');
+
+  if (totalMensagens === 0 && data.total) {
+    totalMensagens = data.total;
+  }
+
+  if (data.status === 'enviado') {
+    totalEnviados++;
+  }
+
+  progressoDiv.innerText = `✅ Enviadas (${totalEnviados}/${totalMensagens})`;
+};
+
+//oort
+app.listen(port, () => {
+  console.log(`🚀 API rodando em http://localhost:${port}`);
+});
+
+
+
