@@ -1,14 +1,34 @@
-
-
+<!DOCTYPE html>
+<html lang="pt-br" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendar Envio de Mensagens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              darkbase: '#17171B',
+              cinzaClaro: '#F6F6F6',
+              painelClaro: '#cfcaca'
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  </head>
   <body
     class="bg-white dark:bg-darkbase text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center p-4">
     <div
       class="w-full bg-painelClaro dark:bg-[#1E1E23] shadow-xl rounded-xl p-6 space-y-4">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg sm:text-xl font-semibold">📆 Agendar Envio de
-          Mensagens</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Automatize o envio
-          com texto, imagem e variáveis personalizadas.</p>
+        <h2 class="text-xl font-semibold">📆 Agendar Envio de Mensagens</h2>
         <button id="toggleDarkMode"
           class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-400 dark:border-gray-300 transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
           <span id="themeIcon" class="transition-transform duration-500">
@@ -87,9 +107,7 @@
 
             <textarea id="mensagem" name="mensagem"
               placeholder="Ex: Olá [NOME], você tem R$ [VALOR] de cashback"
-              class="w-full max-w-full h-32 px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded overflow-auto whitespace-pre-wrap"
-              style="resize: none; width: 100%;"
-              wrap="hard"></textarea>
+              class="w-full h-32 px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded resize-none"></textarea>
 
             <div class="space-y-2">
               <strong>🧩 Inserir variável:</strong><br />
@@ -155,11 +173,8 @@
           Agendar envio</button>
 
       </form>
-
-      <footer class="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
-        Desenvolvido por Sofie e Carlos • © 2025
-      </footer>
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>
