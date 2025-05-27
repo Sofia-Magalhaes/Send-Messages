@@ -259,22 +259,28 @@ const evento = new EventSource('/progresso');
 let totalEnviados = 0;
 let totalMensagens = 0;
 
-evento.onmessage = function(event) {
+const progressoWrapper = document.getElementById('progressoWrapper');
+const progressoBar = document.getElementById('progressoBar');
+const progressoTexto = document.getElementById('progressoTexto');
+
+evento.onmessage = function (event) {
   const data = JSON.parse(event.data);
-  const progressoDiv = document.getElementById('progresso');
 
   if (totalMensagens === 0 && data.total) {
     totalMensagens = data.total;
+    progressoWrapper.classList.remove('hidden'); // Exibe a barra quando começar
   }
 
   if (data.status === 'enviado') {
     totalEnviados++;
   }
 
-  progressoDiv.innerText = `✅ Enviadas (${totalEnviados}/${totalMensagens})`;
+  const porcentagem = totalMensagens > 0 ? Math.round((totalEnviados / totalMensagens) * 100) : 0;
+  progressoBar.style.width = `${porcentagem}%`;
+  progressoTexto.textContent = `✅ Enviadas (${totalEnviados}/${totalMensagens}) - ${porcentagem}%`;
 };
 
-//oort
+//port
 app.listen(port, () => {
   console.log(`🚀 API rodando em http://localhost:${port}`);
 });

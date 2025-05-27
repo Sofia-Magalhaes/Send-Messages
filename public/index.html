@@ -1,34 +1,14 @@
-<!DOCTYPE html>
-<html lang="pt-br" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Agendar Envio de Mensagens</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              darkbase: '#17171B',
-              cinzaClaro: '#F6F6F6',
-              painelClaro: '#cfcaca'
-            }
-          }
-        }
-      }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  </head>
+
+
   <body
     class="bg-white dark:bg-darkbase text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center p-4">
     <div
-      class="w-full max-w-2xl bg-painelClaro dark:bg-[#1E1E23] shadow-xl rounded-xl p-6 space-y-4">
+      class="w-full bg-painelClaro dark:bg-[#1E1E23] shadow-xl rounded-xl p-6 space-y-4">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-semibold">📆 Agendar Envio de Mensagens</h2>
+        <h2 class="text-lg sm:text-xl font-semibold">📆 Agendar Envio de
+          Mensagens</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Automatize o envio
+          com texto, imagem e variáveis personalizadas.</p>
         <button id="toggleDarkMode"
           class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-400 dark:border-gray-300 transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
           <span id="themeIcon" class="transition-transform duration-500">
@@ -41,133 +21,145 @@
       <form id="mensagemForm" enctype="multipart/form-data" method="post"
         action="http://localhost:3000/send-excel" class="space-y-4">
 
-        <div class="flex flex-col md:flex-row gap-4">
-          <div class="w-full md:basis-1/2">
-            <label for="file" class="block font-medium mb-1">📂 Arquivo
-              Excel:</label>
-            <input type="file" name="file" id="file" accept=".xls,.xlsx"
-              required
-              class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
-            <p id="excelFileName" class="text-sm text-gray-600 mt-1"></p>
+        <div class="flex flex-col md:flex-row gap-6">
+          <!-- LADO ESQUERDO: Upload + agendamento -->
+          <div class="md:basis-1/2 space-y-4">
+            <div>
+              <label for="file" class="block font-medium mb-1">📂 Arquivo
+                Excel:</label>
+              <input type="file" name="file" id="file" accept=".xls,.xlsx"
+                required
+                class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
+              <p id="excelFileName" class="text-sm text-gray-600 mt-1"></p>
+            </div>
+
+            <div>
+              <label for="image" class="block font-medium mb-1">🖼️ Imagem
+                (upload):</label>
+              <input type="file" name="image" id="image" accept="image/*"
+                class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
+              <p id="imageFileName" class="text-sm text-gray-600 mt-1"></p>
+              <img id="imagePreview"
+                class="mt-2 max-w-xs rounded shadow hidden" />
+            </div>
+
+            <div>
+              <label for="imageUrl" class="block font-medium mb-1">🌐 URL da
+                imagem (opcional):</label>
+              <input type="text" name="imageUrl" id="imageUrl"
+                placeholder="https://..."
+                class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
+            </div>
+
+            <div>
+              <label for="sendDateTime" class="block font-medium mb-1">⏰ Data e
+                hora para envio:</label>
+              <input type="datetime-local" name="sendDateTime" id="sendDateTime"
+                required
+                class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
+            </div>
+
+            <div>
+              <label for="intervalValue" class="block font-medium mb-1">⏱️
+                Intervalo entre mensagens:</label>
+              <div class="flex items-center gap-2">
+                <input type="number" id="intervalValue" name="intervalValue"
+                  min="1" placeholder="Ex: 5" required
+                  class="w-24 px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
+                <select id="intervalUnit" name="intervalUnit"
+                  class="px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded">
+                  <option value="minutes" selected>Minutos</option>
+                  <option value="hours">Horas</option>
+                </select>
+              </div>
+              <small class="text-gray-500">Exemplo: 1 minuto ou 2 horas.</small>
+            </div>
           </div>
 
-          <div class="w-full md:basis-1/2">
-            <label for="image" class="block font-medium mb-1">🖼️ Imagem
-              (upload):</label>
-            <input type="file" name="image" id="image" accept="image/*"
-              class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
-            <p id="imageFileName" class="text-sm text-gray-600 mt-1"></p>
-            <img id="imagePreview"
-              class="mt-2 max-w-xs rounded shadow hidden" />
+          <!-- LADO DIREITO: Mensagem + pré-visualização + variáveis -->
+          <div class="md:basis-1/2 space-y-4">
+            <div class="flex items-center justify-between">
+              <label for="mensagem" class="font-medium">💬 Mensagem:</label>
+              <button type="button" onclick="exibirMensagem()"
+                class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">👁️
+                Pré-visualizar</button>
+            </div>
+
+            <textarea id="mensagem" name="mensagem"
+              placeholder="Ex: Olá [NOME], você tem R$ [VALOR] de cashback"
+              class="w-full max-w-full h-32 px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded overflow-auto whitespace-pre-wrap"
+              style="resize: none; width: 100%;"
+              wrap="hard"></textarea>
+
+            <div class="space-y-2">
+              <strong>🧩 Inserir variável:</strong><br />
+              <div class="flex flex-wrap gap-2">
+                <button type="button" onclick="inserirVariavel('[name]')"
+                  class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
+                  🙋‍♂️ NOME
+                </button>
+                <button type="button" onclick="inserirVariavel('[amount]')"
+                  class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
+                  💸 VALOR CASHBACK
+                </button>
+                <button type="button"
+                  onclick="inserirVariavel('[purchase_date]')"
+                  class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
+                  📅 DATA DA COMPRA
+                </button>
+                <button type="button"
+                  onclick="inserirVariavel('[cashback_due]')"
+                  class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
+                  💰 VENCIMENTO DO CASHBACK
+                </button>
+                <button type="button" onclick="inserirVariavel('[]')"
+                  class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
+                  🛍️ NOME DA LOJA
+                </button>
+              </div>
+            </div>
+
+            <div id="campoLegenda" style="display: none;" class="mt-2">
+              <label for="legendaImagem"
+                class="text-sm text-gray-700 dark:text-gray-300">Legenda da
+                imagem (opcional):</label>
+              <textarea id="legendaImagem" rows="2"
+                placeholder="Digite aqui a legenda da imagem (opcional)"
+                class="w-full mt-1 p-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white"></textarea>
+            </div>
+
+            <div id="mensagemExibida"
+              class="mensagem-preview mt-4 p-3 bg-green-100 dark:bg-green-800 border border-green-500 rounded font-mono whitespace-pre-wrap text-black dark:text-white"></div>
+            <p id="avisoPreview" style="display: none;"
+              class="text-sm text-gray-600 dark:text-gray-300 mt-2">
+              ⚠️ A pré-visualização mostra a mensagem com os dados do primeiro
+              contato da planilha.
+            </p>
           </div>
         </div>
 
-        <div>
-          <label for="imageUrl" class="block font-medium mb-1">🌐 URL da imagem
-            (opcional):</label>
-          <input type="text" name="imageUrl" id="imageUrl"
-            placeholder="https://..."
-            class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
-        </div>
-
-        <div>
-          <label for="sendDateTime" class="block font-medium mb-1">⏰ Data e hora
-            para envio:</label>
-          <input type="datetime-local" name="sendDateTime" id="sendDateTime"
-            required
-            class="w-full px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
-        </div>
-
-        <div class="mb-4">
-          <label for="intervalValue" class="block font-medium mb-1">⏱️ Intervalo
-            entre mensagens:</label>
-
-          <div class="flex items-center gap-2">
-            <input
-              type="number"
-              id="intervalValue"
-              name="intervalValue"
-              min="1"
-              placeholder="Ex: 5"
-              required
-              class="w-24 px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded" />
-
-            <select
-              id="intervalUnit"
-              name="intervalUnit"
-              class="px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded">
-              <option value="minutes" selected>Minutos</option>
-              <option value="hours">Horas</option>
-            </select>
+        <div id="progressoWrapper" class="w-full mt-4 hidden">
+          <div class="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+            id="progressoLabel">Progresso:</div>
+          <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
+            <div id="progressoBar"
+              class="bg-blue-600 h-4 rounded-full transition-all duration-300 ease-in-out"
+              style="width: 0%"></div>
           </div>
-
-          <small class="text-gray-500">Exemplo: 1 minuto ou 2 horas.</small>
+          <div class="text-sm mt-1 text-gray-600 dark:text-gray-300"
+            id="progressoTexto">Aguardando início...</div>
         </div>
-
-        <div class="flex items-center justify-between">
-          <label for="mensagem" class="font-medium">💬 Mensagem:</label>
-          <button type="button" onclick="exibirMensagem()"
-            class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">👁️
-            Pré-visualizar</button>
-        </div>
-
-        <textarea id="mensagem" name="mensagem"
-          placeholder="Ex: Olá [NOME], você tem R$ [VALOR] de cashback"
-          class="w-full h-32 px-3 py-2 bg-cinzaClaro dark:bg-darkbase border border-gray-400 dark:border-gray-600 rounded resize-none"></textarea>
-
-        <div class="space-y-2">
-          <strong>🧩 Inserir variável:</strong><br />
-          <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="inserirVariavel('[name]')"
-              class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
-              🙋‍♂️ NOME
-            </button>
-            <button type="button" onclick="inserirVariavel('[amount]')"
-              class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
-              💸 VALOR CASHBACK
-            </button>
-            <button type="button" onclick="inserirVariavel('[purchase_date]')"
-              class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
-              📅 DATA DA COMPRA
-            </button>
-            <button type="button" onclick="inserirVariavel('[cashback_due]')"
-              class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
-              💰 VENCIMENTO DO CASHBACK
-            </button>
-            <button type="button" onclick="inserirVariavel('[]')"
-              class="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 px-2 py-1 rounded text-sm flex items-center gap-1">
-              🛍️ NOME DA LOJA
-            </button>
-          </div>
-        </div>
-
-        <!-- CAMPO DE LEGENDA -->
-        <div id="campoLegenda" style="display: none;" class="mt-2">
-          <label for="legendaImagem"
-            class="text-sm text-gray-700 dark:text-gray-300">Legenda da imagem
-            (opcional):</label>
-          <textarea id="legendaImagem" rows="2"
-            placeholder="Digite aqui a legenda da imagem (opcional)"
-            class="w-full mt-1 p-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white"></textarea>
-        </div>
-
-        <div id="mensagemExibida"
-          class="mensagem-preview mt-4 p-3 bg-green-100 dark:bg-green-800 border border-green-500 rounded font-mono whitespace-pre-wrap text-black dark:text-white"></div>
-        <p id="avisoPreview" style="display: none;"
-          class="text-sm text-gray-600 dark:text-gray-300 mt-2">
-          ⚠️ A pré-visualização mostra a mensagem com os dados do primeiro
-          contato da planilha.
-        </p>
-
-        <div id="progresso" style="margin-top: 10px; font-weight: bold;"></div>
-
 
         <button type="submit"
           class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">📤
           Agendar envio</button>
-      </form>
-    </div>
 
+      </form>
+
+      <footer class="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
+        Desenvolvido por Sofie e Carlos • © 2025
+      </footer>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
