@@ -254,30 +254,52 @@ imageInput.addEventListener('change', () => {
   }
 });
 
+
+
 const evento = new EventSource('/progresso');
 
 let totalEnviados = 0;
+let totalComErro = 0; // Novo
 let totalMensagens = 0;
+let alertaExibido = false;
 
 const progressoWrapper = document.getElementById('progressoWrapper');
 const progressoBar = document.getElementById('progressoBar');
 const progressoTexto = document.getElementById('progressoTexto');
 
-evento.onmessage = function (event) {
+evento.onmessage = function(event) {
   const data = JSON.parse(event.data);
+  console.log('Evento recebido:', data); // PARA DEBUG
 
   if (totalMensagens === 0 && data.total) {
     totalMensagens = data.total;
-    progressoWrapper.classList.remove('hidden'); // Exibe a barra quando começar
+    progressoWrapper.classList.remove('hidden');
   }
 
   if (data.status === 'enviado') {
     totalEnviados++;
+  } else if (data.status === 'erro') {
+    totalComErro++;
   }
 
-  const porcentagem = totalMensagens > 0 ? Math.round((totalEnviados / totalMensagens) * 100) : 0;
+  const totalProcessados = totalEnviados + totalComErro;
+  const porcentagem = totalMensagens > 0 ? Math.round((totalProcessados / totalMensagens) * 100) : 0;
+
   progressoBar.style.width = `${porcentagem}%`;
-  progressoTexto.textContent = `✅ Enviadas (${totalEnviados}/${totalMensagens}) - ${porcentagem}%`;
+  progressoTexto.textContent = `✅ Enviadas (${totalEnviados}/${totalMensagens}) - ❌ Erros (${totalComErro}) - ${porcentagem}%`;
+
+  if (porcentagem === 100 && !alertaExibido) {
+    alertaExibido = true;
+
+    Swal.fire({
+      title: 'Envio concluído!',
+      html: `✅ Enviadas: ${totalEnviados}<br>❌ Com erro: ${totalComErro}`,
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      location.reload();
+    });
+  }
 };
 
 //port

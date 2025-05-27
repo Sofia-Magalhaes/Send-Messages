@@ -1,5 +1,6 @@
-2025/05/26-23:55:41.620 1678 Reusing MANIFEST C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\Local Storage\leveldb/MANIFEST-000001
-2025/05/26-23:55:41.624 1678 Recovering log #13
-2025/05/26-23:55:41.624 1678 Level-0 table #16: started
-2025/05/26-23:55:41.639 1678 Level-0 table #16: 14211 bytes OK
-2025/05/26-23:55:41.645 1678 Delete type=0 #13
+2025/05/27-00:23:55.581 2144 Reusing MANIFEST C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\Local Storage\leveldb/MANIFEST-000001
+2025/05/27-00:23:55.584 2144 Recovering log #17
+2025/05/27-00:23:55.587 2144 Reusing old log C:\Users\sofia\Desktop\mensagem\Send-Messages\tokens\apizap\Default\Local Storage\leveldb/000017.log 
+2025/05/27-00:25:55.959 2144 Level-0 table #20: started
+2025/05/27-00:25:55.964 2144 Level-0 table #20: 15046 bytes OK
+2025/05/27-00:25:55.966 2144 Delete type=0 #17

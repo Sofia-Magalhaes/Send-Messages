@@ -168,7 +168,16 @@ function start(client) {
                 });
 
               } catch (error) {
-                console.error(`Erro ao enviar para ${name}:`, error.message);
+                console.error(`❌ Erro ao enviar para ${name}:`, error); // ✅ Nome certo
+                enviarProgresso({
+                  status: 'erro',
+                  name,
+                  number: to,
+                  index: i + 1,
+                  total: data.length,
+                  timestamp: new Date().toISOString(),
+                  error: error.message
+                });
               }
 
 
